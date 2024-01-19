@@ -14,9 +14,6 @@ import org.springframework.stereotype.Component
 @ComponentScan
 @BaseRequest(
     baseURL = "\${baseApi}/v1",
-//    timeout =  10000,
-//    connectTimeout = 10000,
-//    readTimeout = 10000,
 )
 interface SendMessageService {
 

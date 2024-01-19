@@ -13,10 +13,18 @@ data class EventJoin(
     @Expose
     val uid: String? // u_NzLC85cSbUHlTJ8X82wVRQ
 ) {
+    /**
+     * 谁同意
+     * @return
+     */
     fun getAnotherUid(): String {
         return adminUid.toString()
     }
 
+    /**
+     * 谁进来
+     * @return
+     */
     fun getUids(): String {
         return uid.toString()
     }

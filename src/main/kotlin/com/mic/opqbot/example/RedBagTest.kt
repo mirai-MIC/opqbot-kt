@@ -29,7 +29,7 @@ class RedBagTest {
 
     @Async
     @EventListener
-    fun quickReadBag(event: GroupMessageEvent) {
+    fun quickRedBag(event: GroupMessageEvent) {
         val redBag = event.getMessages()?.redBag ?: return
         val redType = redBag.redType
         if (redType != 6 && redType != 12) return
