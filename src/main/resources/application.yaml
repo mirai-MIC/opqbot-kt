@@ -1,0 +1,18 @@
+opqbot:
+  qid: 257207868
+  Ip: 127.0.0.1:9000
+
+forest:
+  backend: okhttp3
+  async-mode: platform
+  connect-timeout: 3000000
+  read-timeout: 3000000
+  timeout: 3000000
+  variables:
+    #  发送消息所需要的地址
+    baseApi: 'http://${opqbot.ip}'
+    userAgent: 'Apifox/1.0.0 (https://apifox.com)'
+    qq: '${opqbot.qid}'
+    apiKey: amls
+  log-enabled: false
+  log-response-status: true
