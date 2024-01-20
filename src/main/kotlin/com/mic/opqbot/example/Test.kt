@@ -19,6 +19,7 @@ import org.springframework.scheduling.annotation.Async
 import org.springframework.stereotype.Component
 import kotlin.random.Random
 
+
 @Component
 class Test {
 
@@ -41,7 +42,7 @@ class Test {
 
     @Async
     @EventListener
-    fun ms(event: GroupMessageEvent) {
+    fun logOutput(event: GroupMessageEvent) {
         if (event.getSender()?.uin == event.getBot()) return
         val sender = event.getSender()
         val info = event.getInfo()
@@ -75,7 +76,7 @@ class Test {
 
     @Async
     @EventListener
-    fun b(event: GroupJoinEvent) {
+    fun AddGroupTips(event: GroupJoinEvent) {
         val groupCode = event.getGroupCode()
         val getuid = event.getUser()?.getUids()
         val queryByUid = sendMessageService.queryByUid(sendutil.queryUinByUid(getuid))
@@ -91,7 +92,7 @@ class Test {
 
     @Async
     @EventListener
-    fun Ai(event: GroupMessageEvent) {
+    fun aiQA(event: GroupMessageEvent) {
         if (event.getMessages()?.atUinLists == null) return
         val bot = event.getMessages()?.atUinLists?.get(0)?.uin
         if (event.getBot() != bot) return
@@ -113,9 +114,8 @@ class Test {
 
     @Async
     @EventListener
-    fun asimage(event: GroupMessageEvent) {
+    fun sendPictures(event: GroupMessageEvent) {
         if (!sendutil.MessageEquals(event, "/image")) return
-
         if (!rateLimiter.tryAcquire()) return
         val sendMessage =
             sendMessageService.sendMessage(
@@ -125,6 +125,7 @@ class Test {
                     sendutil.UploadType.GroupImage
                 )
             )
+
 
         val response = sendMessage?.get("ResponseData")?.asJsonObject
         val sendMsg = sendutil.sendMsg(
@@ -174,4 +175,5 @@ class Test {
         val matchResult = Regex(regex).find(inputText)
         return matchResult?.groupValues?.getOrNull(1)
     }
+
 }

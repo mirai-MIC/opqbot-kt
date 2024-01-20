@@ -17,19 +17,18 @@ class RedBagTest {
     @Resource
     lateinit var sendMessageService: SendMessageService
 
-    fun RandomThanks() = when (Random().nextInt(4)) {
+    fun wordsOfAppreciation() = when (Random().nextInt(4)) {
         0 -> "谢谢老板谢谢老板谢谢老板，给你磕头"
         1 -> "wcwcwc刚进来就有红包吗"
         2 -> "发红包的最帅，爱你爱你爱你"
         3 -> "抢了这么多吗"
-        else -> {
-            "终于抢到了一次呜呜呜呜呜，谢谢老板"
-        }
+        else -> "终于抢到了一次呜呜呜呜呜，谢谢老板"
+
     }
 
     @Async
     @EventListener
-    fun quickRedBag(event: GroupMessageEvent) {
+    fun quicklyOpenTheRedBag(event: GroupMessageEvent) {
         val redBag = event.getMessages()?.redBag ?: return
         val redType = redBag.redType
         if (redType != 6 && redType != 12) return
@@ -37,7 +36,14 @@ class RedBagTest {
         val sendMessage = sendMessageService.sendMessage(sendutil.openRedBag(event))
         val money = sendMessage?.get("ResponseData")?.asJsonObject?.get("GetMoney")?.asDouble
         when (redType) {
-            6 -> sendMessageService.sendMessage(sendutil.sendMsg(event.getInfo()?.groupCode, RandomThanks(), null))
+            6 -> sendMessageService.sendMessage(
+                sendutil.sendMsg(
+                    event.getInfo()?.groupCode,
+                    wordsOfAppreciation(),
+                    null
+                )
+            )
+
             12 -> sendMessageService.sendMessage(sendutil.sendMsg(event.getInfo()?.groupCode, redBag.wishing, null))
             else -> return
         }

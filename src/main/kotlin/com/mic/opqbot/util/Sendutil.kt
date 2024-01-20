@@ -16,7 +16,6 @@ import java.util.*
 
 
 object sendutil {
-
     private val group = "MessageSvc.PbSendMsg"
     private val query = "QueryUinByUid"
     private val upload = "PicUp.DataUp"
@@ -39,13 +38,6 @@ object sendutil {
         )
         return SendTemple(cgiCmd = group, cgiRequest = data)
     }
-
-//    data class ImagesData(
-//        val FileId: Long,
-//        val FileMd5: String,
-//        val FileSize: Long,
-//    )
-
 
     /**
      * 发送图片
@@ -214,6 +206,4 @@ object sendutil {
         if (event.getSender()?.uin == event.getBot()) return false
         return event.getMessages()?.content.equals(message.toString())
     }
-
-
 }
