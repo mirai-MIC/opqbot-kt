@@ -1,6 +1,7 @@
 package com.mic.opqbot.sender.serivce
 
 import com.dtflys.forest.annotation.*
+import com.google.gson.JsonObject
 import com.mic.opqbot.data.ai.output.OutText
 import lombok.SneakyThrows
 import org.springframework.context.annotation.ComponentScan
@@ -9,9 +10,10 @@ import org.springframework.stereotype.Component
 @Component
 @ComponentScan
 @BaseRequest(
-    timeout = 10000,
-    connectTimeout = 10000,
-    readTimeout = 10000,
+    timeout = 100000,
+    readTimeout = 100000,
+    connectTimeout = 100000,
+
 )
 interface Other {
 
@@ -35,5 +37,11 @@ interface Other {
 
     @Get("https://www.loliapi.com/acg/")
     fun getLoli(): ByteArray?
+
+    @Get("https://xiaoapi.cn/API/yy_sq.php?msg=\${name}&type=json&n=1")
+    fun getVoice(@Var("name") name: String): JsonObject?
+
+    @Get("\${url}")
+    fun getVoiceBase64(@Var("url") url: String): ByteArray
 
 }

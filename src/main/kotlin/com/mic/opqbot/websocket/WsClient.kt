@@ -44,6 +44,7 @@ class WsClient {
             override fun onFailure(webSocket: WebSocket, t: Throwable, response: Response?) {
                 super.onFailure(webSocket, t, response)
                 MessageLog.error("连接断开  t: ${t.message} ,response: ${response?.message}")
+                Thread.sleep(100000)
                 client()
             }
 

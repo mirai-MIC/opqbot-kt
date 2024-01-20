@@ -3,7 +3,6 @@
 package com.mic.opqbot.util
 
 import com.mic.opqbot.data.message.eventdata.msgbody.AtUinLists
-import com.mic.opqbot.data.message.eventdata.msgbody.Images
 import com.mic.opqbot.data.message.eventdata.msgbody.RedBag
 import com.mic.opqbot.event.GroupMessageEvent
 import com.mic.opqbot.sender.SendTemple
@@ -41,11 +40,11 @@ object sendutil {
         return SendTemple(cgiCmd = group, cgiRequest = data)
     }
 
-    data class Image(
-        val FileId: Long,
-        val FileMd5: String,
-        val FileSize: Long,
-    )
+//    data class ImagesData(
+//        val FileId: Long,
+//        val FileMd5: String,
+//        val FileSize: Long,
+//    )
 
 
     /**
@@ -55,16 +54,12 @@ object sendutil {
      * @see [Image]
      * @return
      */
-    fun sendMsg(groupCode: Long, images: Images): SendTemple {
-        val image = Image(
-            FileId = images.fileId!!,
-            FileMd5 = images.fileMd5!!,
-            FileSize = images.fileSize!!,
-        )
+    fun sendMsg(groupCode: Long, msgType: String, fileData: Any?): SendTemple {
         val data = mapOf(
             "ToUin" to groupCode,
             "ToType" to 2,
-            "Images" to listOf(image),
+            msgType to if (msgType == utils.MsgType.Voice) fileData
+            else listOf(fileData)
         )
         return SendTemple(cgiCmd = group, cgiRequest = data)
     }

@@ -6,13 +6,13 @@ import com.mic.opqbot.data.ai.input.AliyunAiData
 import com.mic.opqbot.data.ai.input.Input
 import com.mic.opqbot.data.ai.input.Message
 import com.mic.opqbot.data.message.eventdata.msgbody.AtUinLists
-import com.mic.opqbot.data.message.eventdata.msgbody.Images
 import com.mic.opqbot.event.GroupJoinEvent
 import com.mic.opqbot.event.GroupMessageEvent
 import com.mic.opqbot.log.MessageLog
 import com.mic.opqbot.sender.serivce.Other
 import com.mic.opqbot.sender.serivce.SendMessageService
 import com.mic.opqbot.util.sendutil
+import com.mic.opqbot.util.utils
 import jakarta.annotation.Resource
 import org.springframework.context.event.EventListener
 import org.springframework.scheduling.annotation.Async
@@ -81,9 +81,9 @@ class Test {
         val queryByUid = sendMessageService.queryByUid(sendutil.queryUinByUid(getuid))
         val uidList = sendutil.getUidList(queryByUid!!)
         val sendMsg = sendutil.sendMsg(
-            groupCode!!,
-            " 欢迎大佬!!!",
-            AtUinLists(uidList?.nick, uidList?.uin)
+            groupCode = groupCode!!,
+            message = " 欢迎大佬!!!",
+            atUinList = AtUinLists(uidList?.nick, uidList?.uin)
 
         )
         sendMessageService.sendMessage(sendMsg)
@@ -128,16 +128,50 @@ class Test {
 
         val response = sendMessage?.get("ResponseData")?.asJsonObject
         val sendMsg = sendutil.sendMsg(
-            event.getInfo()?.groupCode!!, Images(
-                fileId = response?.get("FileId")?.asLong,
-                fileMd5 = response?.get("FileMd5")?.asString,
-                fileSize = response?.get("FileSize")?.asLong,
-                height = null,
-                url = "",
-                width = null
+            event.getInfo()?.groupCode!!,
+            utils.MsgType.Images,
+            utils.ImagesData(
+                FileId = response?.get("FileId")?.asLong!!,
+                FileMd5 = response.get("FileMd5")?.asString!!,
+                FileSize = response.get("FileSize")?.asLong!!
             )
         )
-
         sendMessageService.sendMessage(sendMsg)
+    }
+
+
+//    @Async
+//    @EventListener
+//    fun sendVoice(event: GroupMessageEvent) {
+//        val processSongCommand = processSongCommand(event.getMessages()?.content!!, "^/点歌\\s(.+)$") ?: return
+//
+//        val asString = other.getVoice(processSongCommand)?.get("url")?.asString!!
+//        val voiceBase64 = other.getVoiceBase64(asString)
+//        val sendMessage = sendMessageService.sendMessage(
+//            sendutil.upLoadFile(
+//                voiceBase64,
+//                sendutil.Type.Base64Buf,
+//                sendutil.UploadType.GroupVoice
+//            )
+//        )
+//        val response = sendMessage?.get("ResponseData")?.asJsonObject
+//
+//        println(response)
+//        val sendMsg = sendutil.sendMsg(
+//            event.getInfo()?.groupCode!!,
+//            utils.MsgType.Voice,
+//            utils.VoiceData(
+//                FileMd5 = response?.get("FileMd5")?.asString!!,
+//                FileSize = response.get("FileSize")?.asLong!!,
+//                FileToken = response.get("FileToken")?.asString!!,
+//            )
+//        )
+//        sendMessageService.sendMessage(sendMsg)
+//
+//    }
+
+    fun processSongCommand(inputText: String, regex: String): String? {
+        val matchResult = Regex(regex).find(inputText)
+        return matchResult?.groupValues?.getOrNull(1)
     }
 }

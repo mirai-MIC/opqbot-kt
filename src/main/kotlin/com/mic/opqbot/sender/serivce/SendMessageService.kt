@@ -13,7 +13,7 @@ import org.springframework.stereotype.Component
 @Component
 @ComponentScan
 @BaseRequest(
-    baseURL = "\${baseApi}/v1",
+    baseURL = "\${baseApi}/v1"
 )
 interface SendMessageService {
 
