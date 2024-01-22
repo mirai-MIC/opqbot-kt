@@ -17,8 +17,9 @@ object utils {
         val FileSize: Long,
         val FileToken: String
     )
-    object MsgType{
-        val Images="Images"
-        val Voice="Voice"
+
+    object MsgType {
+        val Images = "Images"
+        val Voice = "Voice"
     }
 }

@@ -39,22 +39,6 @@ object sendutil {
         return SendTemple(cgiCmd = group, cgiRequest = data)
     }
 
-    /**
-     * 发送图片
-     * @param groupCode
-     * @param images
-     * @see [Image]
-     * @return
-     */
-    fun sendMsg(groupCode: Long, msgType: String, fileData: Any?): SendTemple {
-        val data = mapOf(
-            "ToUin" to groupCode,
-            "ToType" to 2,
-            msgType to if (msgType == utils.MsgType.Voice) fileData
-            else listOf(fileData)
-        )
-        return SendTemple(cgiCmd = group, cgiRequest = data)
-    }
 
     /**
      * 发送文件方式
@@ -79,8 +63,27 @@ object sendutil {
         const val GroupVoice = 29
     }
 
+
     /**
-     * @param t  图片格式 FilePath Base64Buf FileUrl
+     * 发送图片
+     * @param groupCode
+     * @param images
+     * @see [Image]
+     * @return
+     */
+    fun sendMsg(groupCode: Long, msgType: String, fileData: Any?): SendTemple {
+        val data = mapOf(
+            "ToUin" to groupCode,
+            "ToType" to 2,
+            msgType to if (msgType == utils.MsgType.Voice) fileData
+            else listOf(fileData)
+        )
+        return SendTemple(cgiCmd = group, cgiRequest = data)
+    }
+
+
+    /**
+     * @param t  格式 FilePath Base64Buf FileUrl
      * @param s  Type 上传文件的格式
      * @param c  UploadType 1好友图片2群组图片26好友语音29群组语音
      * @see [UploadType]

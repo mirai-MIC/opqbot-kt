@@ -14,7 +14,7 @@ import org.springframework.stereotype.Component
     readTimeout = 100000,
     connectTimeout = 100000,
 
-)
+    )
 interface Other {
 
 

@@ -14,6 +14,7 @@ import com.mic.opqbot.sender.serivce.SendMessageService
 import com.mic.opqbot.util.sendutil
 import com.mic.opqbot.util.utils
 import jakarta.annotation.Resource
+import lombok.SneakyThrows
 import org.springframework.context.event.EventListener
 import org.springframework.scheduling.annotation.Async
 import org.springframework.stereotype.Component
@@ -31,7 +32,7 @@ class Test {
     @Resource
     lateinit var other: Other
 
-    fun randomText() = when (Random.nextInt(3)) {
+    fun randomImage() = when (Random.nextInt(3)) {
         0 -> other.getIw23Random()
         1 -> other.getAcg()
         2 -> other.getLoli()
@@ -41,12 +42,14 @@ class Test {
 
 
     @Async
+    @SneakyThrows
     @EventListener
     fun logOutput(event: GroupMessageEvent) {
         if (event.getSender()?.uin == event.getBot()) return
         val sender = event.getSender()
         val info = event.getInfo()
         val messages = event.getMessages()
+        println()
         MessageLog.info("code: ${event.getMsgInfo()?.msgType.toString()}")
         MessageLog.info("eventName: ${event.eventName()}")
         MessageLog.info("群号：${info?.groupCode} - (${info?.groupName}) 群成员：${sender?.uin} - (${sender?.nick})")
@@ -60,6 +63,7 @@ class Test {
 
 
     @Async
+    @SneakyThrows
     @EventListener
     fun revoke(event: GroupMessageEvent) {
         val uin = event.getSender()?.uin
@@ -75,6 +79,7 @@ class Test {
 
 
     @Async
+    @SneakyThrows
     @EventListener
     fun AddGroupTips(event: GroupJoinEvent) {
         val groupCode = event.getGroupCode()
@@ -91,6 +96,7 @@ class Test {
     }
 
     @Async
+    @SneakyThrows
     @EventListener
     fun aiQA(event: GroupMessageEvent) {
         if (event.getMessages()?.atUinLists == null) return
@@ -113,6 +119,7 @@ class Test {
     }
 
     @Async
+    @SneakyThrows
     @EventListener
     fun sendPictures(event: GroupMessageEvent) {
         if (!sendutil.MessageEquals(event, "/image")) return
@@ -120,12 +127,11 @@ class Test {
         val sendMessage =
             sendMessageService.sendMessage(
                 sendutil.upLoadFile(
-                    sendutil.compressAndEncodeToBase64Thumbnails(randomText(), 0.9),
+                    sendutil.compressAndEncodeToBase64Thumbnails(randomImage(), 0.9),
                     sendutil.Type.Base64Buf,
                     sendutil.UploadType.GroupImage
                 )
             )
-
 
         val response = sendMessage?.get("ResponseData")?.asJsonObject
         val sendMsg = sendutil.sendMsg(
@@ -141,35 +147,36 @@ class Test {
     }
 
 
-//    @Async
-//    @EventListener
-//    fun sendVoice(event: GroupMessageEvent) {
-//        val processSongCommand = processSongCommand(event.getMessages()?.content!!, "^/点歌\\s(.+)$") ?: return
-//
-//        val asString = other.getVoice(processSongCommand)?.get("url")?.asString!!
-//        val voiceBase64 = other.getVoiceBase64(asString)
-//        val sendMessage = sendMessageService.sendMessage(
-//            sendutil.upLoadFile(
-//                voiceBase64,
-//                sendutil.Type.Base64Buf,
-//                sendutil.UploadType.GroupVoice
-//            )
-//        )
-//        val response = sendMessage?.get("ResponseData")?.asJsonObject
-//
-//        println(response)
-//        val sendMsg = sendutil.sendMsg(
-//            event.getInfo()?.groupCode!!,
-//            utils.MsgType.Voice,
-//            utils.VoiceData(
-//                FileMd5 = response?.get("FileMd5")?.asString!!,
-//                FileSize = response.get("FileSize")?.asLong!!,
-//                FileToken = response.get("FileToken")?.asString!!,
-//            )
-//        )
-//        sendMessageService.sendMessage(sendMsg)
-//
-//    }
+    @Async
+    @SneakyThrows
+    @EventListener
+    fun sendVoice(event: GroupMessageEvent) {
+        val processSongCommand = processSongCommand(event.getMessages()?.content!!, "^/点歌\\s(.+)$") ?: return
+
+        val asString = other.getVoice(processSongCommand)?.get("url")?.asString!!
+        val voiceBase64 = other.getVoiceBase64(asString)
+        val sendMessage = sendMessageService.upLoadFile(
+            sendutil.upLoadFile(
+                voiceBase64,
+                sendutil.Type.Base64Buf,
+                sendutil.UploadType.GroupVoice
+            )
+        )
+        val response = sendMessage?.get("ResponseData")?.asJsonObject
+
+        println(response)
+        val sendMsg = sendutil.sendMsg(
+            event.getInfo()?.groupCode!!,
+            utils.MsgType.Voice,
+            utils.VoiceData(
+                FileMd5 = response?.get("FileMd5")?.asString!!,
+                FileSize = response.get("FileSize")?.asLong!!,
+                FileToken = response.get("FileToken")?.asString!!,
+            )
+        )
+        sendMessageService.sendMessage(sendMsg)
+
+    }
 
     fun processSongCommand(inputText: String, regex: String): String? {
         val matchResult = Regex(regex).find(inputText)

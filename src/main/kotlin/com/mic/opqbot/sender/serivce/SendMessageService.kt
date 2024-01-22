@@ -21,11 +21,9 @@ interface SendMessageService {
     @SneakyThrows
     fun sendMessage(@JSONBody data: Any?): JsonObject?
 
-
     @Post("/LuaApiCaller?funcname=MagicCgiCmd&timeout=10&qq=\${qq}")
     @SneakyThrows
     fun queryByUid(@JSONBody data: Any?): QueryJson?
-
 
     @Post("/upload?qq=\${qq}")
     @SneakyThrows
