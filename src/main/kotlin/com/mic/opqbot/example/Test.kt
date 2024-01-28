@@ -47,13 +47,13 @@ class Test {
     @SneakyThrows
     @EventListener
     fun logOutput(event: GroupMessageEvent) {
-        if (event.getSender()?.uin == event.getBot()) return
-        val sender = event.getSender()
-        val info = event.getInfo()
+        if (event.isFromBot()) return
+        val sender = event.getSenderInfo()
+        val info = event.getGroupInfo()
         val messages = event.getMessages()
         println()
-        MessageLog.info("code: ${event.getMsgInfo()?.msgType.toString()}")
-        MessageLog.info("eventName: ${event.eventName()}")
+        MessageLog.info("code: ${event.getMsgTime()?.msgType.toString()}")
+        MessageLog.info("eventName: ${event.getEventName()}")
         MessageLog.info("群号：${info?.groupCode} - (${info?.groupName}) 群成员：${sender?.uin} - (${sender?.nick})")
 
         if (messages != null && messages.content?.isNotBlank() == true) MessageLog.info("消息：${messages.content}")
@@ -68,15 +68,14 @@ class Test {
     @SneakyThrows
     @EventListener
     fun revoke(event: GroupMessageEvent) {
-        val uin = event.getSender()?.uin
-        val bot = event.getBot()
-        if (uin != bot) return
-        val msgInfo = event.getMsgInfo()
+        val uin = event.getSenderInfo()?.uin
+        if (!event.isFromBot()) return
+        val msgInfo = event.getMsgTime()
         val msgSeq = msgInfo?.msgSeq
         val msgRandom = msgInfo?.msgRandom
         Thread.sleep(60000)
         MessageLog.info("撤回消息")
-        sendMessageService.sendMessage(sendutil.groupRevokeMsg(event.getInfo()?.groupCode, msgSeq, msgRandom))
+        sendMessageService.sendMessage(sendutil.groupRevokeMsg(event.getGroupCode(), msgSeq, msgRandom))
     }
 
 
@@ -92,7 +91,6 @@ class Test {
             groupCode = groupCode!!,
             message = " 欢迎大佬!!!",
             atUinList = AtUinLists(uidList?.nick, uidList?.uin)
-
         )
         sendMessageService.sendMessage(sendMsg)
     }
@@ -101,19 +99,18 @@ class Test {
     @SneakyThrows
     @EventListener
     fun aiQA(event: GroupMessageEvent) {
-        if (event.getMessages()?.atUinLists == null) return
-        val bot = event.getMessages()?.atUinLists?.get(0)?.uin
-        if (event.getBot() != bot) return
+        if (event.isFromBot()) return
+        if (!event.atBot()) return
         val aliyunAiData = AliyunAiData(
             model = "qwen-turbo",
             input = Input(listOf(Message(role = "user", content = event.getMessages()?.content))),
             parameters = null
         )
         val aliBot = other.AliBot(Gson().toJson(aliyunAiData)) ?: return
-        val nick = event.getSender()?.nick
-        val uin = event.getSender()?.uin
+        val nick = event.getSenderInfo()?.nick
+        val uin = event.getSenderInfo()?.uin
         val sendMsg = sendutil.sendMsg(
-            event.getInfo()?.groupCode,
+            event.getGroupCode(),
             aliBot.output?.text,
             AtUinLists(nick, uin)
         )
@@ -136,7 +133,7 @@ class Test {
             )
         val response = sendMessage?.get("ResponseData")?.asJsonObject
         val sendMsg = sendutil.sendMsg(
-            event.getInfo()?.groupCode!!,
+            event.getGroupCode()!!,
             utils.MsgType.Images,
             utils.ImagesData(
                 FileId = response?.get("FileId")?.asLong!!,
@@ -166,7 +163,7 @@ class Test {
 
         println(response)
         val sendMsg = sendutil.sendMsg(
-            event.getInfo()?.groupCode!!,
+            event.getGroupCode()!!,
             utils.MsgType.Voice,
             utils.VoiceData(
                 FileMd5 = response?.get("FileMd5")?.asString!!,

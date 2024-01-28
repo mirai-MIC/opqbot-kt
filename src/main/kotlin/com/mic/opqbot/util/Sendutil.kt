@@ -209,7 +209,7 @@ object sendutil {
     }
 
     fun <T> T.messageEquals(event: GroupMessageEvent): Boolean {
-        if (event.getBot() == event.getSender()?.uin) return false
+        if (event.isFromBot()) return false
         return event.getMessages()?.content!! == this.toString()
     }
 }

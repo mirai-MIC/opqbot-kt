@@ -21,10 +21,14 @@ data class MsgInfo(
 )
 
 @Data
-data class UserInfo(
+data class FromInfo(
     val fromType: Int?, // 1
     val fromUin: Long?,
     val fromUid: String?,
+)
+
+@Data
+data class ToInfo(
     val toUid: String?,
     val toUin: Long?
 )

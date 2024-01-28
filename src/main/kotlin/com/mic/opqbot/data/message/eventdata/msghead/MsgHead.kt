@@ -58,26 +58,26 @@ data class MsgHead(
      * 消息发送者info
      * @return
      */
-    fun getSenderUser(): Sender {
-        return Sender(nick = senderNick, uin = senderUin, uid = senderUid)
-    }
+    fun getSenderUser(): Sender = Sender(nick = senderNick, uin = senderUin, uid = senderUid)
 
     /**
      * 包含消息发送的时间记录,消息Id，消息类型
      *  @return
      */
-    fun getMsgInfo(): MsgInfo {
-        return MsgInfo(msgRandom = msgRandom, msgSeq = msgSeq, msgTime = msgTime, msgUid = msgUid, msgType = msgType)
-    }
+    fun getMsgInfo(): MsgInfo =
+        MsgInfo(msgRandom = msgRandom, msgSeq = msgSeq, msgTime = msgTime, msgUid = msgUid, msgType = msgType)
+
 
     /**
      * 封装发送消息体中from和to部分
      *
      * @return
      */
-    fun getUserInfo(): UserInfo {
-        return UserInfo(fromType = fromType, fromUid = fromUid, fromUin = fromUin, toUid = toUid, toUin = toUin)
-    }
+    fun getFromInfo(): FromInfo = FromInfo(fromType = fromType, fromUid = fromUid, fromUin = fromUin)
+
+
+    fun getToInfo(): ToInfo = ToInfo(toUid = toUid, toUin = toUin)
+
 }
 
 

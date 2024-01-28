@@ -35,19 +35,19 @@ class RedBagTest {
         Thread.sleep(2000)
         val sendMessage = sendMessageService.sendMessage(sendutil.openRedBag(event))
         val money = sendMessage?.get("ResponseData")?.asJsonObject?.get("GetMoney")?.asDouble?.div(100)
-        if (money==0.0) return
+        if (money == 0.0) return
         when (redType) {
             6 -> sendMessageService.sendMessage(
                 sendutil.sendMsg(
-                    event.getInfo()?.groupCode,
+                    event.getGroupCode(),
                     amls(),
                     null
                 )
             )
 
-            12 -> sendMessageService.sendMessage(sendutil.sendMsg(event.getInfo()?.groupCode, redBag.wishing, null))
+            12 -> sendMessageService.sendMessage(sendutil.sendMsg(event.getGroupCode(), redBag.wishing, null))
             else -> return
         }
-        MessageLog.info("红包金额： ${money}")
+        MessageLog.info("红包金额： $money")
     }
 }
