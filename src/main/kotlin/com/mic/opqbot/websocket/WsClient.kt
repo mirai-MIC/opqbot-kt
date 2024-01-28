@@ -16,14 +16,10 @@ import org.springframework.stereotype.Component
 
 @Component
 class WsClient {
-
-
     @Resource
     lateinit var yamlConfig: YamlConfig
-
     @Resource
     lateinit var applicationContext: ApplicationContext
-
     val client = OkHttpClient()
 
     @Bean(name = ["WsClientBean"])
@@ -58,7 +54,7 @@ class WsClient {
                             this,
                             fromJson
                         )
-                    );
+                    )
                     EventNameType.ON_EVENT_GROUP_JOIN -> applicationContext.publishEvent(
                         GroupJoinEvent(
                             this,

@@ -12,6 +12,8 @@ import com.mic.opqbot.log.MessageLog
 import com.mic.opqbot.sender.serivce.Other
 import com.mic.opqbot.sender.serivce.SendMessageService
 import com.mic.opqbot.util.sendutil
+import com.mic.opqbot.util.sendutil.messageEquals
+import com.mic.opqbot.util.sendutil.regularProcessing
 import com.mic.opqbot.util.utils
 import jakarta.annotation.Resource
 import lombok.SneakyThrows
@@ -81,7 +83,7 @@ class Test {
     @Async
     @SneakyThrows
     @EventListener
-    fun AddGroupTips(event: GroupJoinEvent) {
+    fun addGroupTips(event: GroupJoinEvent) {
         val groupCode = event.getGroupCode()
         val getuid = event.getUser()?.getUids()
         val queryByUid = sendMessageService.queryByUid(sendutil.queryUinByUid(getuid))
@@ -122,7 +124,7 @@ class Test {
     @SneakyThrows
     @EventListener
     fun sendPictures(event: GroupMessageEvent) {
-        if (!sendutil.MessageEquals(event, "/image")) return
+        if (!"/image".messageEquals(event)) return
         if (!rateLimiter.tryAcquire()) return
         val sendMessage =
             sendMessageService.sendMessage(
@@ -132,7 +134,6 @@ class Test {
                     sendutil.UploadType.GroupImage
                 )
             )
-
         val response = sendMessage?.get("ResponseData")?.asJsonObject
         val sendMsg = sendutil.sendMsg(
             event.getInfo()?.groupCode!!,
@@ -148,11 +149,10 @@ class Test {
 
 
     @Async
-    @SneakyThrows
+    @SneakyThrows(Exception::class)
     @EventListener
     fun sendVoice(event: GroupMessageEvent) {
-        val processSongCommand = processSongCommand(event.getMessages()?.content!!, "^/点歌\\s(.+)$") ?: return
-
+        val processSongCommand = event.getMessages()?.content!!.regularProcessing("^/点歌\\s(.+)$") ?: return
         val asString = other.getVoice(processSongCommand)?.get("url")?.asString!!
         val voiceBase64 = other.getVoiceBase64(asString)
         val sendMessage = sendMessageService.upLoadFile(
@@ -178,9 +178,5 @@ class Test {
 
     }
 
-    fun processSongCommand(inputText: String, regex: String): String? {
-        val matchResult = Regex(regex).find(inputText)
-        return matchResult?.groupValues?.getOrNull(1)
-    }
 
 }

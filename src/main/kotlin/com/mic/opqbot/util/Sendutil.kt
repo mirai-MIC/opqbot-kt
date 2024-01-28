@@ -52,11 +52,10 @@ object sendutil {
 
     /**
      *  发送文件类型
-     *
+     *  1好友图片2群组图片26好友语音29群组语音
      * @constructor Create empty Upload type
      */
     object UploadType {
-        //        1好友图片2群组图片26好友语音29群组语音
         const val FriendImage = 1
         const val GroupImage = 2
         const val FriendVoice = 26
@@ -138,7 +137,6 @@ object sendutil {
      * @return
      */
     fun getUidList(queryJson: QueryJson): ResponseData? {
-
         return queryJson.responseData?.map {
             ResponseData(
                 head = it?.head,
@@ -205,8 +203,13 @@ object sendutil {
      * @param value
      * @return
      */
-    fun MessageEquals(event: GroupMessageEvent, message: Any?): Boolean {
-        if (event.getSender()?.uin == event.getBot()) return false
-        return event.getMessages()?.content.equals(message.toString())
+
+    fun <T> T.regularProcessing(data: String): String? {
+        return Regex(data).find(this.toString())?.groupValues?.getOrNull(1)
+    }
+
+    fun <T> T.messageEquals(event: GroupMessageEvent): Boolean {
+        if (event.getBot() == event.getSender()?.uin) return false
+        return event.getMessages()?.content!! == this.toString()
     }
 }

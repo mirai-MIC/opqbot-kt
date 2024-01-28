@@ -17,7 +17,7 @@ class RedBagTest {
     @Resource
     lateinit var sendMessageService: SendMessageService
 
-    fun wordsOfAppreciation() = when (Random().nextInt(4)) {
+    fun amls() = when (Random().nextInt(4)) {
         0 -> "谢谢老板谢谢老板谢谢老板，给你磕头"
         1 -> "wcwcwc刚进来就有红包吗"
         2 -> "发红包的最帅，爱你爱你爱你"
@@ -32,14 +32,15 @@ class RedBagTest {
         val redBag = event.getMessages()?.redBag ?: return
         val redType = redBag.redType
         if (redType != 6 && redType != 12) return
-        Thread.sleep(1000)
+        Thread.sleep(2000)
         val sendMessage = sendMessageService.sendMessage(sendutil.openRedBag(event))
-        val money = sendMessage?.get("ResponseData")?.asJsonObject?.get("GetMoney")?.asDouble
+        val money = sendMessage?.get("ResponseData")?.asJsonObject?.get("GetMoney")?.asDouble?.div(100)
+        if (money==0.0) return
         when (redType) {
             6 -> sendMessageService.sendMessage(
                 sendutil.sendMsg(
                     event.getInfo()?.groupCode,
-                    wordsOfAppreciation(),
+                    amls(),
                     null
                 )
             )
@@ -47,6 +48,6 @@ class RedBagTest {
             12 -> sendMessageService.sendMessage(sendutil.sendMsg(event.getInfo()?.groupCode, redBag.wishing, null))
             else -> return
         }
-        MessageLog.info("红包金额： ${money?.div(100)}")
+        MessageLog.info("红包金额： ${money}")
     }
 }
