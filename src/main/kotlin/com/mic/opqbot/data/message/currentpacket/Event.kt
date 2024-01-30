@@ -53,11 +53,11 @@ data class EventGroupAction(
     //invite
 
     fun beInvited(): String? {
-        return getInviteInfo().tips?.get(1)
+        return getInviteInfo().tips!![1]
     }
 
     fun invite(): String? {
-        return getInviteInfo().tips?.get(0)
+        return getInviteInfo().tips!![0]
     }
 
 
