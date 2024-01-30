@@ -64,6 +64,7 @@ class Test {
     @Async
     @EventListener
     fun privateMessageOutPut(event: PrivateMessageEvent) {
+        if (event.getType() == false) return
         val messages = event.getMessages()
         val json = sendMessageService.queryByUid(sendutil.queryUinByUid(event.getSenderInfo()!!.uid))
         val uidList = sendutil.getUidList(json!!)
@@ -81,17 +82,23 @@ class Test {
     @Async
     @EventListener
     fun ass(event: GroupInviteEvent) {
-        val eventGroupAction = event.getEventGroupAction()
         println()
-        MessageLog.info("被邀请人: ${eventGroupAction?.invitee}")
-        MessageLog.info("邀请人: ${eventGroupAction?.invitor}")
-        MessageLog.info("详细: ${eventGroupAction?.tips}")
-//        val sendMsg = sendutil.sendMsg(
-//            groupCode = event.getGroupCode()!!,
-//            message = "${eventGroupAction?.invitee}被${eventGroupAction?.invitor}邀请进群",
-//            atUinList = null
-//        )
-//        sendMessageService.sendMessage(sendMsg)
+
+
+        val valBeInvite =
+            sendutil.getUidList(sendMessageService.queryByUid(sendutil.queryUinByUid(event.getBeInvitedUid()))!!)
+        val valInvite =
+            sendutil.getUidList(sendMessageService.queryByUid(sendutil.queryUinByUid(event.getInviteUid()))!!)
+
+        MessageLog.info("邀请人: ${valInvite!!.uin}")
+        MessageLog.info("被邀请人: ${valBeInvite!!.uin}")
+
+        val sendMsg = sendutil.sendMsg(
+            groupCode = event.getGroupCode()!!,
+            message = "${valBeInvite.uin}-(${valBeInvite.nick}) 被${valInvite.uin}-(${valInvite.nick})邀请进群",
+            atUinList = null
+        )
+        sendMessageService.sendMessage(sendMsg)
     }
 
     @Async
@@ -128,9 +135,10 @@ class Test {
     @Async
     @SneakyThrows
     @EventListener
-    fun addGroupTips(event: GroupJoinJoinEvent) {
+    fun addGroupTips(event: GroupJoinEvent) {
         val groupCode = event.getGroupCode()
         val getuid = event.getEventGroupAction()?.uid
+        if (getuid!!.isEmpty()) return
         val queryByUid = sendMessageService.queryByUid(sendutil.queryUinByUid(getuid))
         val uidList = sendutil.getUidList(queryByUid!!)
         val sendMsg = sendutil.sendMsg(
@@ -244,6 +252,7 @@ class Test {
     }
 
     fun removeAtPrefix(text: String): String {
-        return text.substring(9)
+        val regex = Regex("@@(ᵔᵕᵔ˶)")
+        return regex.replaceFirst(text, "")
     }
 }

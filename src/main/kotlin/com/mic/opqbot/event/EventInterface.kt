@@ -30,7 +30,10 @@ interface EventGroupJoinInterface : EventCommonGroupInterface, EventCommonMsgTim
 interface EventGroupExitInterface : EventCommonGroupInterface, EventCommonMsgTimeInterface, EventUserInterface
 
 interface EventGroupInviteInterface : EventCommonGroupInterface, EventCommonMsgTimeInterface, EventUserInterface,
-    EventGroupActionInterface
+    EventGroupActionInterface {
+    fun getInviteUid(): String?
+    fun getBeInvitedUid(): String?
+}
 
 interface EventPrivateMessageInterface : EventCommonMsgTimeInterface, EventUserInterface, EventMessages
 

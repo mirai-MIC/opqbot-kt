@@ -56,7 +56,7 @@ class WsClient {
                     )
 
                     EventNameType.ON_EVENT_GROUP_JOIN -> applicationContext.publishEvent(
-                        GroupJoinJoinEvent(
+                        GroupJoinEvent(
                             this, fromJson
                         )
                     )

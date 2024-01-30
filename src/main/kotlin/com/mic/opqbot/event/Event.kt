@@ -86,7 +86,7 @@ class GroupMessageEvent(source: Any?, msgBodyVO: CurrentPacket?) : ApplicationEv
  * @property eventData EventData?
  * @constructor
  */
-class GroupJoinJoinEvent(source: Any?, msgBodyVO: CurrentPacket?) : ApplicationEvent(source!!),
+class GroupJoinEvent(source: Any?, msgBodyVO: CurrentPacket?) : ApplicationEvent(source!!),
     EventGroupJoinInterface {
 
     private val message: CurrentPacket? = msgBodyVO
@@ -175,6 +175,14 @@ class GroupInviteEvent(source: Any?, msgBodyVO: CurrentPacket?) : ApplicationEve
 
     private val message: CurrentPacket? = msgBodyVO
     private val eventData: EventData? = message?.currentPacket?.eventData
+    override fun getInviteUid(): String? {
+        return eventData!!.event?.invite()
+    }
+
+    override fun getBeInvitedUid(): String? {
+        return eventData!!.event?.beInvited()
+    }
+
     override fun getGroupCode(): Long? {
         return isFromInfo()?.fromUin
     }
@@ -204,6 +212,7 @@ class GroupInviteEvent(source: Any?, msgBodyVO: CurrentPacket?) : ApplicationEve
     override fun getEventGroupAction(): InviteInfo? {
         return eventData?.event?.getInviteInfo()
     }
+
 }
 
 /**
@@ -247,6 +256,10 @@ class PrivateMessageEvent(source: Any?, msgBodyVO: CurrentPacket?) : Application
 
     override fun getMessages(): MsgBody? {
         return eventData!!.msgBody
+    }
+
+    fun getType(): Boolean? {
+        return eventData!!.msgHead?.msgType == 166
     }
 
 }

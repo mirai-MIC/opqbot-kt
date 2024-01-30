@@ -5,6 +5,7 @@ import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 import com.mic.opqbot.data.message.eventdata.msghead.EventAction
 import com.mic.opqbot.data.message.eventdata.msghead.InviteInfo
+import java.util.regex.Pattern
 
 
 data class EventGroupAction(
@@ -46,7 +47,27 @@ data class EventGroupAction(
      * @return InviteInfo
      */
     fun getInviteInfo(): InviteInfo {
-        return InviteInfo(invitee, invitor, tips)
+        return InviteInfo(invitee, invitor, extractUinValuesFromXml(tips!!))
+    }
+    //beInvited
+    //invite
+
+    fun beInvited(): String? {
+        return getInviteInfo().tips?.get(1)
+    }
+
+    fun invite(): String? {
+        return getInviteInfo().tips?.get(0)
+    }
+
+
+    private fun extractUinValuesFromXml(xmlString: String): List<String> {
+        val pattern = Pattern.compile("<qq uin=\"(.*?)\"")
+        val matcher = pattern.matcher(xmlString)
+
+        return generateSequence {
+            if (matcher.find()) matcher.group(1) else null
+        }.toList()
     }
 
 }

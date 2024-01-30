@@ -37,7 +37,7 @@ data class ToInfo(
 data class InviteInfo(
     val invitee: Long?,
     val invitor: Long?,
-    val tips: String?
+    val tips: List<String>?
 )
 //    @SerializedName("AdminUid") @Expose val adminUid: String?, // u_OWoCswoPQ9myb8wd8DfnMg
 //    @SerializedName("Uid") @Expose val uid: String?,// u_NzLC85cSbUHlTJ8X82wVRQ
