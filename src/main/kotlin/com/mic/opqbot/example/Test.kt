@@ -83,19 +83,14 @@ class Test {
     @EventListener
     fun ass(event: GroupInviteEvent) {
         println()
-
-
         val valBeInvite =
             sendutil.getUidList(sendMessageService.queryByUid(sendutil.queryUinByUid(event.getBeInvitedUid()))!!)
         val valInvite =
             sendutil.getUidList(sendMessageService.queryByUid(sendutil.queryUinByUid(event.getInviteUid()))!!)
 
-        MessageLog.info("邀请人: ${valInvite!!.uin}")
-        MessageLog.info("被邀请人: ${valBeInvite!!.uin}")
-
         val sendMsg = sendutil.sendMsg(
             groupCode = event.getGroupCode()!!,
-            message = "${valBeInvite.uin}-(${valBeInvite.nick}) 被${valInvite.uin}-(${valInvite.nick})邀请进群",
+            message = "${valBeInvite!!.uin}-(${valBeInvite.nick}) 被${valInvite!!.uin}-(${valInvite!!.nick})邀请进群",
             atUinList = null
         )
         sendMessageService.sendMessage(sendMsg)
