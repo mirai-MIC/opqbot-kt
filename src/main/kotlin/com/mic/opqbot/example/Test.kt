@@ -42,7 +42,7 @@ class Test {
 
 
     @Async
-    @SneakyThrows
+    @SneakyThrows(Exception::class)
     @EventListener
     fun groupMessageOutput(event: GroupMessageEvent) {
         if (event.isFromBot()) return
@@ -62,6 +62,7 @@ class Test {
     }
 
     @Async
+    @SneakyThrows(Exception::class)
     @EventListener
     fun privateMessageOutPut(event: PrivateMessageEvent) {
         if (event.getType() == false) return
@@ -80,6 +81,7 @@ class Test {
     }
 
     @Async
+    @SneakyThrows(Exception::class)
     @EventListener
     fun ass(event: GroupInviteEvent) {
         println()
@@ -87,7 +89,7 @@ class Test {
             sendutil.getUidList(sendMessageService.queryByUid(sendutil.queryUinByUid(event.getBeInvitedUid()))!!)
         val valInvite =
             sendutil.getUidList(sendMessageService.queryByUid(sendutil.queryUinByUid(event.getInviteUid()))!!)
-
+        MessageLog.info("\"${valBeInvite!!.uin}-(${valBeInvite.nick}) 被${valInvite!!.uin}-(${valInvite!!.nick})邀请进群\"")
         val sendMsg = sendutil.sendMsg(
             groupCode = event.getGroupCode()!!,
             message = "${valBeInvite!!.uin}-(${valBeInvite.nick}) 被${valInvite!!.uin}-(${valInvite!!.nick})邀请进群",
@@ -97,6 +99,7 @@ class Test {
     }
 
     @Async
+    @SneakyThrows(Exception::class)
     @EventListener
     fun exit(event: GroupExitEvent) {
         val json = sendMessageService.queryByUid(sendutil.queryUinByUid(event.getExitUid()))
@@ -128,7 +131,7 @@ class Test {
 //
 
     @Async
-    @SneakyThrows
+    @SneakyThrows(Exception::class)
     @EventListener
     fun addGroupTips(event: GroupJoinEvent) {
         val groupCode = event.getGroupCode()
@@ -145,7 +148,7 @@ class Test {
     }
 
     @Async
-    @SneakyThrows
+    @SneakyThrows(Exception::class)
     @EventListener
     fun aiQA(event: GroupMessageEvent) {
         if (event.isFromBot()) return
@@ -170,6 +173,7 @@ class Test {
     }
 
     @Async
+    @SneakyThrows(Exception::class)
     @EventListener
     fun aiPrivate(event: PrivateMessageEvent) {
         if (event.getTextContent() == null) return
@@ -189,7 +193,7 @@ class Test {
     }
 
     @Async
-    @SneakyThrows
+    @SneakyThrows(Exception::class)
     @EventListener
     fun sendPictures(event: GroupMessageEvent) {
         if (!"/image".messageEquals(event)) return
@@ -216,35 +220,35 @@ class Test {
     }
 
 
-    @Async
-    @SneakyThrows(Exception::class)
-    @EventListener
-    fun sendVoice(event: GroupMessageEvent) {
-        val processSongCommand = event.getMessages()?.content!!.regularProcessing("^/点歌\\s(.+)$") ?: return
-        val asString = other.getVoice(processSongCommand)?.get("url")?.asString!!
-        val voiceBase64 = other.getVoiceBase64(asString)
-        val sendMessage = sendMessageService.upLoadFile(
-            sendutil.upLoadFile(
-                voiceBase64,
-                sendutil.Type.Base64Buf,
-                sendutil.UploadType.GroupVoice
-            )
-        )
-        val response = sendMessage?.get("ResponseData")?.asJsonObject
-
-        println(response)
-        val sendMsg = sendutil.sendMsg(
-            event.getGroupCode()!!,
-            utils.MsgType.Voice,
-            utils.VoiceData(
-                FileMd5 = response?.get("FileMd5")?.asString!!,
-                FileSize = response.get("FileSize")?.asLong!!,
-                FileToken = response.get("FileToken")?.asString!!,
-            )
-        )
-        sendMessageService.sendMessage(sendMsg)
-
-    }
+//    @Async
+//    @SneakyThrows(Exception::class)
+//    @EventListener
+//    fun sendVoice(event: GroupMessageEvent) {
+//        val processSongCommand = event.getMessages()?.content!!.regularProcessing("^/点歌\\s(.+)$") ?: return
+//        val asString = other.getVoice(processSongCommand)?.get("url")?.asString!!
+//        val voiceBase64 = other.getVoiceBase64(asString)
+//        val sendMessage = sendMessageService.upLoadFile(
+//            sendutil.upLoadFile(
+//                voiceBase64,
+//                sendutil.Type.Base64Buf,
+//                sendutil.UploadType.GroupVoice
+//            )
+//        )
+//        val response = sendMessage?.get("ResponseData")?.asJsonObject
+//
+//        println(response)
+//        val sendMsg = sendutil.sendMsg(
+//            event.getGroupCode()!!,
+//            utils.MsgType.Voice,
+//            utils.VoiceData(
+//                FileMd5 = response?.get("FileMd5")?.asString!!,
+//                FileSize = response.get("FileSize")?.asLong!!,
+//                FileToken = response.get("FileToken")?.asString!!,
+//            )
+//        )
+//        sendMessageService.sendMessage(sendMsg)
+//
+//    }
 
     fun removeAtPrefix(text: String): String {
         val regex = Regex("@@(ᵔᵕᵔ˶)")
