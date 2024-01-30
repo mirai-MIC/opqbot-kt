@@ -6,7 +6,9 @@ import com.mic.opqbot.data.ai.input.AliyunAiData
 import com.mic.opqbot.data.ai.input.Input
 import com.mic.opqbot.data.ai.input.Message
 import com.mic.opqbot.data.message.eventdata.msgbody.AtUinLists
-import com.mic.opqbot.event.GroupJoinEvent
+import com.mic.opqbot.event.GroupExitEvent
+import com.mic.opqbot.event.GroupInviteEvent
+import com.mic.opqbot.event.GroupJoinJoinEvent
 import com.mic.opqbot.event.GroupMessageEvent
 import com.mic.opqbot.log.MessageLog
 import com.mic.opqbot.sender.serivce.Other
@@ -52,7 +54,7 @@ class Test {
         val info = event.getGroupInfo()
         val messages = event.getMessages()
         println()
-        MessageLog.info("code: ${event.getMsgTime()?.msgType.toString()}")
+        MessageLog.info("code: ${event.getMsgTimeInfo()?.msgType.toString()}")
         MessageLog.info("eventName: ${event.getEventName()}")
         MessageLog.info("群号：${info?.groupCode} - (${info?.groupName}) 群成员：${sender?.uin} - (${sender?.nick})")
 
@@ -63,6 +65,37 @@ class Test {
         MessageLog.info("消息链: ${event.getMessages()}")
     }
 
+    @Async
+    @EventListener
+    fun ass(event: GroupInviteEvent) {
+        val eventGroupAction = event.getEventGroupAction()
+        println()
+        MessageLog.info("被邀请人: ${eventGroupAction?.invitee}")
+        MessageLog.info("邀请人: ${eventGroupAction?.invitor}")
+        MessageLog.info("详细: ${eventGroupAction?.tips}")
+//        val sendMsg = sendutil.sendMsg(
+//            groupCode = event.getGroupCode()!!,
+//            message = "${eventGroupAction?.invitee}被${eventGroupAction?.invitor}邀请进群",
+//            atUinList = null
+//        )
+//        sendMessageService.sendMessage(sendMsg)
+    }
+
+    @Async
+    @EventListener
+    fun exit(event: GroupExitEvent) {
+        val json = sendMessageService.queryByUid(sendutil.queryUinByUid(event.getExitUid()))
+        val uidList = sendutil.getUidList(json!!)
+        println()
+        MessageLog.info("群:${event.getGroupCode()} 成员: ${uidList?.uin} ${uidList?.nick} 退群了")
+        val sendMsg = sendutil.sendMsg(
+            groupCode = event.getGroupCode()!!,
+            message = "就在刚刚..我们的群友: ${uidList?.uin}(${uidList?.nick})神隐嘞..",
+            atUinList = null
+        )
+        sendMessageService.sendMessage(sendMsg)
+    }
+
 
     @Async
     @SneakyThrows
@@ -70,7 +103,7 @@ class Test {
     fun revoke(event: GroupMessageEvent) {
         val uin = event.getSenderInfo()?.uin
         if (!event.isFromBot()) return
-        val msgInfo = event.getMsgTime()
+        val msgInfo = event.getMsgTimeInfo()
         val msgSeq = msgInfo?.msgSeq
         val msgRandom = msgInfo?.msgRandom
         Thread.sleep(60000)
@@ -82,9 +115,9 @@ class Test {
     @Async
     @SneakyThrows
     @EventListener
-    fun addGroupTips(event: GroupJoinEvent) {
+    fun addGroupTips(event: GroupJoinJoinEvent) {
         val groupCode = event.getGroupCode()
-        val getuid = event.getUser()?.getUids()
+        val getuid = event.getEventGroupAction()?.uid
         val queryByUid = sendMessageService.queryByUid(sendutil.queryUinByUid(getuid))
         val uidList = sendutil.getUidList(queryByUid!!)
         val sendMsg = sendutil.sendMsg(

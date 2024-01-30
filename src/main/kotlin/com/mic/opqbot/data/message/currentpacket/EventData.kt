@@ -13,7 +13,7 @@ data class EventData(
      */
     @SerializedName("Event")
     @Expose
-    val event: EventJoin?, // null
+    val event: EventGroupAction?, // null
     /**
      * 消息体
      */

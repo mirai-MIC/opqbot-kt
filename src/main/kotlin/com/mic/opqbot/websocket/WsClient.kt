@@ -4,8 +4,7 @@ import com.google.gson.Gson
 import com.mic.opqbot.config.YamlConfig
 import com.mic.opqbot.data.message.currentpacket.CurrentPacket
 import com.mic.opqbot.enums.EventNameType
-import com.mic.opqbot.event.GroupJoinEvent
-import com.mic.opqbot.event.GroupMessageEvent
+import com.mic.opqbot.event.*
 import com.mic.opqbot.log.MessageLog
 import jakarta.annotation.Resource
 import okhttp3.*
@@ -18,6 +17,7 @@ import org.springframework.stereotype.Component
 class WsClient {
     @Resource
     lateinit var yamlConfig: YamlConfig
+
     @Resource
     lateinit var applicationContext: ApplicationContext
     val client = OkHttpClient()
@@ -51,14 +51,31 @@ class WsClient {
                 when (eventName) {
                     EventNameType.ON_EVENT_GROUP_NEW_MSG -> applicationContext.publishEvent(
                         GroupMessageEvent(
-                            this,
-                            fromJson
+                            this, fromJson
                         )
                     )
+
                     EventNameType.ON_EVENT_GROUP_JOIN -> applicationContext.publishEvent(
-                        GroupJoinEvent(
-                            this,
-                            fromJson
+                        GroupJoinJoinEvent(
+                            this, fromJson
+                        )
+                    )
+
+                    EventNameType.ON_EVENT_GROUP_EXIT -> applicationContext.publishEvent(
+                        GroupExitEvent(
+                            this, fromJson
+                        )
+                    )
+
+                    EventNameType.ON_EVENT_GROUP_INVITE -> applicationContext.publishEvent(
+                        GroupInviteEvent(
+                            this, fromJson
+                        )
+                    )
+
+                    EventNameType.ON_EVENT_FRIEND_NEW_MSG -> applicationContext.publishEvent(
+                        PrivateMessageEvent(
+                            this, fromJson
                         )
                     )
                 }
