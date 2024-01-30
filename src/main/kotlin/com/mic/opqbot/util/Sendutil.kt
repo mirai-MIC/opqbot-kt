@@ -16,7 +16,7 @@ import java.util.*
 
 
 object sendutil {
-    private val group = "MessageSvc.PbSendMsg"
+    private val message = "MessageSvc.PbSendMsg"
     private val query = "QueryUinByUid"
     private val upload = "PicUp.DataUp"
     private val revoke = "GroupRevokeMsg"
@@ -36,7 +36,7 @@ object sendutil {
             "Content" to message,
             "AtUinLists" to list
         )
-        return SendTemple(cgiCmd = group, cgiRequest = data)
+        return SendTemple(cgiCmd = this.message, cgiRequest = data)
     }
 
 
@@ -77,9 +77,26 @@ object sendutil {
             msgType to if (msgType == utils.MsgType.Voice) fileData
             else listOf(fileData)
         )
-        return SendTemple(cgiCmd = group, cgiRequest = data)
+        return SendTemple(cgiCmd = message, cgiRequest = data)
     }
 
+    //{
+    //  "CgiCmd": "MessageSvc.PbSendMsg",
+    //  "CgiRequest": {
+    //    "ToUin": {{QQUid}},
+    //    "ToType": 1,
+    //    "Content": "你好"
+    //  }
+    //}
+    fun sendMsg(privateUin: Long, msg: String): SendTemple {
+
+        val data = mapOf(
+            "ToUin" to privateUin,
+            "ToType" to 1,
+            "Content" to msg
+        )
+        return SendTemple(cgiCmd = message, cgiRequest = data)
+    }
 
     /**
      * @param t  格式 FilePath Base64Buf FileUrl

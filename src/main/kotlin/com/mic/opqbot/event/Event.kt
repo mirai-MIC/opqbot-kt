@@ -5,7 +5,6 @@ import com.mic.opqbot.data.message.currentpacket.EventData
 import com.mic.opqbot.data.message.eventdata.msgbody.AtUinList
 import com.mic.opqbot.data.message.eventdata.msgbody.MsgBody
 import com.mic.opqbot.data.message.eventdata.msghead.*
-import lombok.Getter
 import org.springframework.context.ApplicationEvent
 
 
@@ -218,10 +217,13 @@ class PrivateMessageEvent(source: Any?, msgBodyVO: CurrentPacket?) : Application
 
     private val message: CurrentPacket? = msgBodyVO
     private val eventData: EventData? = message?.currentPacket?.eventData
+    fun isFormBot(): Boolean {
+        return getSenderInfo()!!.uin == message!!.currentQQ
+    }
+
     override fun getMsgTimeInfo(): MsgInfo? {
         return eventData!!.msgHead?.getMsgInfo()
     }
-
 
     override fun getSenderInfo(): Sender? {
         return eventData?.msgHead?.getSenderUser()
