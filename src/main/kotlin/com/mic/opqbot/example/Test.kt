@@ -10,8 +10,7 @@ import com.mic.opqbot.log.MessageLog
 import com.mic.opqbot.sender.serivce.Other
 import com.mic.opqbot.sender.serivce.SendMessageService
 import com.mic.opqbot.util.sendutil
-import com.mic.opqbot.util.sendutil.messageEquals
-import com.mic.opqbot.util.sendutil.regularProcessing
+import com.mic.opqbot.util.sendutil.messageProcessing
 import com.mic.opqbot.util.utils
 import jakarta.annotation.Resource
 import lombok.SneakyThrows
@@ -124,7 +123,7 @@ class Test {
 //        val msgInfo = event.getMsgTimeInfo()
 //        val msgSeq = msgInfo?.msgSeq
 //        val msgRandom = msgInfo?.msgRandom
-//        Thread.sleep(60000)
+//        Thread.sleep(60)
 //        MessageLog.info("撤回消息")
 //        sendMessageService.sendMessage(sendutil.groupRevokeMsg(event.getGroupCode(), msgSeq, msgRandom))
 //    }
@@ -196,7 +195,7 @@ class Test {
     @SneakyThrows(Exception::class)
     @EventListener
     fun sendPictures(event: GroupMessageEvent) {
-        if (!"/image".messageEquals(event)) return
+        if (!"/image".messageProcessing(event)) return
         if (!rateLimiter.tryAcquire()) return
         val sendMessage =
             sendMessageService.sendMessage(
@@ -224,7 +223,7 @@ class Test {
 //    @SneakyThrows(Exception::class)
 //    @EventListener
 //    fun sendVoice(event: GroupMessageEvent) {
-//        val processSongCommand = event.getMessages()?.content!!.regularProcessing("^/点歌\\s(.+)$") ?: return
+//        val processSongCommand = event.getMessages()?.content!!.messageProcessing("^/点歌\\s(.+)$") ?: return
 //        val asString = other.getVoice(processSongCommand)?.get("url")?.asString!!
 //        val voiceBase64 = other.getVoiceBase64(asString)
 //        val sendMessage = sendMessageService.upLoadFile(

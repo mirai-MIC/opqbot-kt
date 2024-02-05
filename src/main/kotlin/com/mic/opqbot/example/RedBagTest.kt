@@ -23,7 +23,6 @@ class RedBagTest {
         2 -> "发红包的最帅，爱你爱你爱你"
         3 -> "抢了这么多吗"
         else -> "终于抢到了一次呜呜呜呜呜，谢谢老板"
-
     }
 
     @Async
@@ -48,6 +47,7 @@ class RedBagTest {
             12 -> sendMessageService.sendMessage(sendutil.sendMsg(event.getGroupCode(), redBag.wishing, null))
             else -> return
         }
+
         MessageLog.info("红包金额： $money")
     }
 }

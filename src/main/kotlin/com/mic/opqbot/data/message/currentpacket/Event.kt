@@ -64,7 +64,6 @@ data class EventGroupAction(
     private fun extractUinValuesFromXml(xmlString: String): List<String> {
         val pattern = Pattern.compile("<qq uin=\"(.*?)\"")
         val matcher = pattern.matcher(xmlString)
-
         return generateSequence {
             if (matcher.find()) matcher.group(1) else null
         }.toList()

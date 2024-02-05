@@ -258,7 +258,7 @@ class PrivateMessageEvent(source: Any?, msgBodyVO: CurrentPacket?) : Application
         return eventData!!.msgBody
     }
 
-    fun getType(): Boolean? {
+    fun getType(): Boolean {
         return eventData!!.msgHead?.msgType == 166
     }
 
