@@ -86,8 +86,9 @@ class Test {
         println()
         val valBeInvite =
             sendutil.getUidList(sendMessageService.queryByUid(sendutil.queryUinByUid(event.getBeInvitedUid()))!!)
+                ?: return
         val valInvite =
-            sendutil.getUidList(sendMessageService.queryByUid(sendutil.queryUinByUid(event.getInviteUid()))!!)
+            sendutil.getUidList(sendMessageService.queryByUid(sendutil.queryUinByUid(event.getInviteUid()))!!) ?: return
         MessageLog.info("\"${valBeInvite!!.uin}-(${valBeInvite.nick}) 被${valInvite!!.uin}-(${valInvite!!.nick})邀请进群\"")
         val sendMsg = sendutil.sendMsg(
             groupCode = event.getGroupCode()!!,
@@ -196,7 +197,8 @@ class Test {
     @EventListener
     fun sendPictures(event: GroupMessageEvent) {
         if (!"/image".messageProcessing(event)) return
-        if (!rateLimiter.tryAcquire()) return
+//        println("/image".messageProcessing(event))
+                if (!rateLimiter.tryAcquire()) return
         val sendMessage =
             sendMessageService.sendMessage(
                 sendutil.upLoadFile(
@@ -205,7 +207,7 @@ class Test {
                     sendutil.UploadType.GroupImage
                 )
             )
-        val response = sendMessage?.get("ResponseData")?.asJsonObject
+        val response = sendMessage?.get("ResponseData")?.asJsonObject ?: return
         val sendMsg = sendutil.sendMsg(
             event.getGroupCode()!!,
             utils.MsgType.Images,

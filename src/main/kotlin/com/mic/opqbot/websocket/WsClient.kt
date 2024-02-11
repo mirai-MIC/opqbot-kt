@@ -27,7 +27,6 @@ class WsClient {
         client()
     }
 
-
     fun client(): WebSocket {
         val request = Request.Builder().url("ws://${yamlConfig.Ip}/ws").build()
 
@@ -49,11 +48,13 @@ class WsClient {
                 val fromJson = Gson().fromJson(text, CurrentPacket::class.java)
                 val eventName = fromJson.currentPacket?.eventName
                 when (eventName) {
-                    EventNameType.ON_EVENT_GROUP_NEW_MSG -> applicationContext.publishEvent(
-                        GroupMessageEvent(
-                            this, fromJson
+                    EventNameType.ON_EVENT_GROUP_NEW_MSG -> {
+                        applicationContext.publishEvent(
+                            GroupMessageEvent(
+                                this, fromJson
+                            )
                         )
-                    )
+                    }
 
                     EventNameType.ON_EVENT_GROUP_JOIN -> applicationContext.publishEvent(
                         GroupJoinEvent(

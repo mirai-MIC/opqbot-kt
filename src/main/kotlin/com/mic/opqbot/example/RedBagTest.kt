@@ -30,8 +30,8 @@ class RedBagTest {
     fun quicklyOpenTheRedBag(event: GroupMessageEvent) {
         val redBag = event.getMessages()?.redBag ?: return
         val redType = redBag.redType
-        if (redType != 6 && redType != 12) return
-        Thread.sleep(2000)
+        if (redType != 6 && redType != 12 && redType != 4) return
+        Thread.sleep(1500)
         val sendMessage = sendMessageService.sendMessage(sendutil.openRedBag(event))
         val money = sendMessage?.get("ResponseData")?.asJsonObject?.get("GetMoney")?.asDouble?.div(100)
         if (money == 0.0) return
@@ -47,7 +47,6 @@ class RedBagTest {
             12 -> sendMessageService.sendMessage(sendutil.sendMsg(event.getGroupCode(), redBag.wishing, null))
             else -> return
         }
-
         MessageLog.info("红包金额： $money")
     }
 }

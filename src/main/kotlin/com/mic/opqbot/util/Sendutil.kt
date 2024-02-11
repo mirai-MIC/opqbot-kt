@@ -227,7 +227,8 @@ object sendutil {
 
     fun <T> T.messageProcessing(event: GroupMessageEvent): Boolean {
         if (event.isFromBot()) return false
-        return event.getMessages()?.content!! == this.toString()
+        if (event.msgType() == 732) return false
+        return event.getMessages()?.content == this.toString()
     }
 
 

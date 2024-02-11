@@ -21,6 +21,10 @@ class GroupMessageEvent(source: Any?, msgBodyVO: CurrentPacket?) : ApplicationEv
     private val message: CurrentPacket? = msgBodyVO
 
     private val eventData: EventData? = message?.currentPacket?.eventData
+//    private val eventData: EventData? = if (message?.currentPacket?.eventData?.msgHead?.toUin != message?.currentQQ) {
+//        message!!.currentPacket!!.eventData
+//    } else null
+
     override fun atBot(): Boolean {
         return getAtInfo()?.any { it.uin == message!!.currentQQ } ?: false
     }
@@ -31,6 +35,10 @@ class GroupMessageEvent(source: Any?, msgBodyVO: CurrentPacket?) : ApplicationEv
 
     override fun getGroupCode(): Long? {
         return eventData!!.msgHead?.groupInfo?.groupCode
+    }
+
+    override fun msgType(): Int? {
+        return message!!.currentPacket!!.eventData!!.msgHead!!.msgType
     }
 
     override fun getGroupInfo(): GroupInfo? {
@@ -120,6 +128,10 @@ class GroupJoinEvent(source: Any?, msgBodyVO: CurrentPacket?) : ApplicationEvent
     override fun getEventGroupAction(): EventAction? {
         return eventData?.event?.getAdminUidAndUidData()
     }
+
+    override fun msgType(): Int? {
+        return message!!.currentPacket!!.eventData!!.msgHead!!.msgType
+    }
 }
 
 /**
@@ -161,6 +173,10 @@ class GroupExitEvent(source: Any?, msgBodyVO: CurrentPacket?) : ApplicationEvent
 
     fun getExitUid(): String? {
         return eventData?.event?.getUids()
+    }
+
+    override fun msgType(): Int? {
+        return message!!.currentPacket!!.eventData!!.msgHead!!.msgType
     }
 }
 
@@ -213,6 +229,9 @@ class GroupInviteEvent(source: Any?, msgBodyVO: CurrentPacket?) : ApplicationEve
         return eventData?.event?.getInviteInfo()
     }
 
+    override fun msgType(): Int? {
+        return message!!.currentPacket!!.eventData!!.msgHead!!.msgType
+    }
 }
 
 /**
