@@ -11,6 +11,5 @@ import org.springframework.scheduling.annotation.EnableAsync
 @EnableConfigurationProperties(YamlConfig::class)
 class OpqbotApplication
 
-fun main(args: Array<String>) {
+fun main(args: Array<String>) =
     runApplication<OpqbotApplication>(*args)
-}

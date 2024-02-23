@@ -198,7 +198,7 @@ class Test {
     fun sendPictures(event: GroupMessageEvent) {
         if (!"/image".messageProcessing(event)) return
 //        println("/image".messageProcessing(event))
-                if (!rateLimiter.tryAcquire()) return
+        if (!rateLimiter.tryAcquire()) return
         val sendMessage =
             sendMessageService.sendMessage(
                 sendutil.upLoadFile(

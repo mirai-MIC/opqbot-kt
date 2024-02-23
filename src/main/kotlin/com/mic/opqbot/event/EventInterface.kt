@@ -3,7 +3,6 @@ package com.mic.opqbot.event
 import com.mic.opqbot.data.message.eventdata.msgbody.AtUinList
 import com.mic.opqbot.data.message.eventdata.msgbody.MsgBody
 import com.mic.opqbot.data.message.eventdata.msghead.*
-import com.mic.opqbot.util.utils
 
 /**
  * 群聊消息接口

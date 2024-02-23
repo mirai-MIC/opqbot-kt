@@ -29,7 +29,6 @@ class WsClient {
 
     fun client(): WebSocket {
         val request = Request.Builder().url("ws://${yamlConfig.Ip}/ws").build()
-
         val listener = object : WebSocketListener() {
             override fun onClosed(webSocket: WebSocket, code: Int, reason: String) {
                 super.onClosed(webSocket, code, reason)
